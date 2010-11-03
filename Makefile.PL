@@ -10,8 +10,8 @@ my %conf = (
     ABSTRACT_FROM  => 'lib/MojoX/Renderer/Xslate.pm',
     PREREQ_PM      => {
         parent         => 0,
-        Mojo           => 0,
-        'Text::Xslate' => 0,
+        Mojolicious    => 0.999934,
+        'Text::Xslate' => 0.2013,
         'Try::Tiny'    => 0,
     },
     BUILD_REQUIRES => {
@@ -27,7 +27,10 @@ my %conf = (
     clean          => { FILES => 'MojoX-Renderer-Xslate-*' },
 );
 
-my $eumm_version=$ExtUtils::MakeMaker::VERSION;
+my $eumm_version =  do {
+    no warnings 'numeric';
+    eval $ExtUtils::MakeMaker::VERSION;
+};
 delete $conf{META_MERGE} if $eumm_version < 6.46;
 $conf{PREREQ_PM} = {
     %{ $conf{PREREQ_PM} || {} }, %{ delete $conf{BUILD_REQUIRES} },

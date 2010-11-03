@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               MojoX-Renderer-Xslate
-version:            0.01
+version:            0.02
 abstract:           Text::Xslate renderer for Mojo
 author:
     - gray <gray@cpan.org>
@@ -12,9 +12,9 @@ build_requires:
     Test::Mojo:  0
     Test::More:  0.82
 requires:
-    Mojo:          0
+    Mojolicious:   0.999934
     parent:        0
-    Text::Xslate:  0
+    Text::Xslate:  0.2013
     Try::Tiny:     0
 resources:
     repository:  http://github.com/gray/mojox-renderer-xslate

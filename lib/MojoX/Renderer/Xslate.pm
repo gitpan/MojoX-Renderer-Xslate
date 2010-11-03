@@ -5,10 +5,11 @@ use warnings;
 use parent qw(Mojo::Base);
 
 use File::Spec ();
+use Mojo::Command;
 use Text::Xslate ();
 use Try::Tiny;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 $VERSION = eval $VERSION;
 
 __PACKAGE__->attr('xslate');
@@ -23,12 +24,22 @@ sub _init {
     my ($self, %args) = @_;
 
     my $app = $args{mojo} || $args{app};
+    my $cache_dir;
+    my @path = $app->home->rel_dir('templates');
+
+    if ($app) {
+        $cache_dir = $app->home->rel_dir('tmp/compiled_templates');
+        push @path, Mojo::Command->new->get_all_data(
+            $app->renderer->default_template_class,
+        );
+    }
+    else {
+        $cache_dir = File::Spec->tmpdir;
+    }
+
     my %config = (
-        cache_dir => File::Spec->tmpdir,
-        $app ? (
-            cache_dir => $app->home->rel_dir('tmp/compiled_templates'),
-            path      => [ $app->home->rel_dir('templates') ],
-        ) : (),
+        cache_dir => $cache_dir,
+        path      => \@path,
         %{ $args{template_options} || {} },
     );
 
@@ -42,10 +53,10 @@ sub _render {
 
     my $name = $c->stash->{'template_name'}
         || $renderer->template_name($options);
-    my @params = (%{$c->stash}, c => $c);
+    my %params = (%{$c->stash}, c => $c);
 
     try {
-        $$output = $self->xslate->render($name, {@params});
+        $$output = $self->xslate->render($name, \%params);
     }
     catch {
         my $err = $_;
