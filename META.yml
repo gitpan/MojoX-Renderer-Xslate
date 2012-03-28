@@ -1,28 +1,28 @@
---- #YAML:1.0
-name:               MojoX-Renderer-Xslate
-version:            0.04
-abstract:           Text::Xslate renderer for Mojo
+---
+abstract: 'Text::Xslate renderer for Mojo'
 author:
-    - gray <gray@cpan.org>
-license:            perl
-distribution_type:  module
-configure_requires:
-    ExtUtils::MakeMaker:  0
+  - 'gray <gray@cpan.org>'
 build_requires:
-    Test::Mojo:  0
-    Test::More:  0.82
-requires:
-    Mojolicious:   0.999934
-    parent:        0
-    Text::Xslate:  0.2013
-    Try::Tiny:     0
-resources:
-    repository:  http://github.com/gray/mojox-renderer-xslate
-no_index:
-    directory:
-        - t
-        - inc
-generated_by:       ExtUtils::MakeMaker version 6.56
+  Test::Mojo: 0
+  Test::More: 0.82
+configure_requires:
+  ExtUtils::MakeMaker: 0
+dynamic_config: 1
+generated_by: 'ExtUtils::MakeMaker version 6.62, CPAN::Meta::Converter version 2.120630'
+license: perl
 meta-spec:
-    url:      http://module-build.sourceforge.net/META-spec-v1.4.html
-    version:  1.4
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: MojoX-Renderer-Xslate
+no_index:
+  directory:
+    - t
+    - inc
+requires:
+  Mojolicious: 0.999934
+  Text::Xslate: 0.2013
+  Try::Tiny: 0
+  parent: 0
+resources:
+  repository: http://github.com/gray/mojox-renderer-xslate
+version: 0.05
