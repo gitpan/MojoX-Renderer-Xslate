@@ -2,17 +2,16 @@ package MojoX::Renderer::Xslate;
 
 use strict;
 use warnings;
-use parent qw(Mojo::Base);
 
 use File::Spec ();
+use Mojo::Base -base;
 use Mojo::Loader;
 use Text::Xslate ();
-use Try::Tiny;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 $VERSION = eval $VERSION;
 
-__PACKAGE__->attr('xslate');
+has 'xslate';
 
 sub build {
     my $self = shift->SUPER::new(@_);
@@ -38,9 +37,11 @@ sub _init {
     }
 
     my %config = (
-        cache_dir => $cache_dir,
-        path      => \@path,
-        %{ $args{template_options} || {} },
+        cache_dir    => $cache_dir,
+        path         => \@path,
+        warn_handler => sub { },
+        die_handler  => sub { },
+        %{$args{template_options} || {}},
     );
 
     $self->xslate(Text::Xslate->new(\%config));
@@ -55,16 +56,14 @@ sub _render {
         || $renderer->template_name($options);
     my %params = (%{$c->stash}, c => $c);
 
-    try {
+    local $@;
+    if (defined(my $inline = $options->{inline})) {
+        $$output = $self->xslate->render_string($inline, \%params);
+    }
+    else {
         $$output = $self->xslate->render($name, \%params);
     }
-    catch {
-        my $err = $_;
-        $c->app->log->error(qq(Template error in "$name": $err));
-        $c->render_exception($err);
-        $$output = '';
-        return 0;
-    };
+    die $@ if $@;
 
     return 1;
 }
@@ -168,7 +167,7 @@ L<http://search.cpan.org/dist/MojoX-Renderer-Xslate/>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2010-2012 gray <gray at cpan.org>, all rights reserved.
+Copyright (C) 2010-2013 gray <gray at cpan.org>, all rights reserved.
 
 This library is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.
